@@ -15,7 +15,8 @@ tSeznamMest* VytvorMesto(char* mesto)
 tSeznamMest* PridejNaKonec(tSeznamMest* seznam, tSeznamMest* novy) {
 	if (seznam == NULL)
 	{
-		return novy;
+		seznam = &novy;
+		return seznam;
 	}
 	tSeznamMest* temp = seznam;
 	int index = 0;
@@ -33,19 +34,36 @@ tSeznamMest* PridejNaKonec(tSeznamMest* seznam, tSeznamMest* novy) {
 
 tSeznamMest* PridejNaIndex(tSeznamMest* seznam, int index, tSeznamMest* novy) {
 	tSeznamMest* temp = seznam;
-	if (seznam == NULL)
-	{
-		seznam = novy;
-		return seznam;
-	}
 	for (int i = 0; i < index - 1; i++)
 	{
-
+		if (temp->dalsi == NULL)
+		{
+			return NULL;
+		}
+		temp = temp->dalsi;
 	}
-	return NULL; //TODO predstiram ze to funguje
+	if (temp->dalsi != NULL)
+	{
+		if (temp->dalsi->dalsi != NULL)
+		{
+			novy->dalsi = temp->dalsi->dalsi;
+			temp->dalsi = novy;
+		}else{
+			temp->dalsi = novy;
+		}
+	}
+	else {
+		temp->dalsi = novy;
+	}
+	return seznam;
 }
 
 void VypisSeznam(tSeznamMest* seznam) {
+	printf("ZacatekVypisu\n");
+	if (seznam == NULL)
+	{
+		return;
+	}
 	printf("%s", seznam->mesto);
 	tSeznamMest* temp = seznam;
 	while (temp->dalsi != NULL)

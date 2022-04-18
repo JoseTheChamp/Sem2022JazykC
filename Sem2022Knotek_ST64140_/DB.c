@@ -33,7 +33,6 @@ tDatabaze* NactiDatabazi(char* soubor)  //TODO zjistit od n2koho jak nacita 2roz
 		}
 	}
 	printf("Nacteny mesta\n");
-	VypisSeznam(temp->seznam);
 
 
 	//Nacitani vzdalenosti
@@ -44,25 +43,16 @@ tDatabaze* NactiDatabazi(char* soubor)  //TODO zjistit od n2koho jak nacita 2roz
 		temp->vzdalenosti[i] = (double*)malloc(size*sizeof(double));
 	}
 	printf("Hotova alokace\n");
-	char s[6];
-	int index = 0;
-	char c;
+
 	for (int i = 0; i < size; i++)
 	{
 		for (int j = 0; j < size; j++)
 		{
-			while ((c =  getc(file)) != '\t')
-			{
-				s[index++] = c;
-			}
-			index = 0;
-			puts(s);
-;			temp->vzdalenosti[i][j] = strtod(s,NULL);
+			fscanf(file,"%lf", &temp->vzdalenosti[i][j]);
 		}
 	}
+
 	printf("Hotovo\n");
-	printf("%d\n",temp->vzdalenosti[2][2]);
-	printf("%d\n", temp->vzdalenosti[3][1]);
 	return temp;
 }
 void ZrusDatabazi(tDatabaze* db) {//Nevi jestli funguje
@@ -78,10 +68,12 @@ int DejIndexMesta(tDatabaze* db, char* mesto) { //TODO otestovat
 	{
 		if (strcmp(temp->mesto,mesto))
 		{
+			printf("NASEL mesto v seznamu - %d.\n",i);
 			return i;
 		}
 		temp = temp->dalsi;
 	}
+	printf("Nenasel mesto v seznamu.\n");
 }
 double DejVzdalenostMeziMesty(tDatabaze* db, char* mesto1, char* mesto2) {
 	return db->vzdalenosti[DejIndexMesta(db, mesto1)][DejIndexMesta(db, mesto2)];
@@ -89,13 +81,16 @@ double DejVzdalenostMeziMesty(tDatabaze* db, char* mesto1, char* mesto2) {
 double SpocitejDelku(tDatabaze* db, tSeznamMest* seznam) { //Zkontrolovat funk4nost
 	if (seznam == NULL)
 	{
+		printf("Srznam byl NULL\n");
 		return 0;
 	}
 	double vzdalenost = 0;
 	tSeznamMest *temp = seznam;
 	while (temp->dalsi != NULL)
 	{
+		printf("VZdalenost cykl\n");
 		vzdalenost = vzdalenost + DejVzdalenostMeziMesty(db,temp->mesto,temp->dalsi->mesto);
+		printf("vzdalenost cykl - %f\n", vzdalenost);
 		temp = temp->dalsi;
 	}
 	return vzdalenost;
