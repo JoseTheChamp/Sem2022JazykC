@@ -2,10 +2,26 @@
 #include <stdio.h>
 #include "stdlib.h"
 #include "string.h"
+#include <ctype.h>
 #pragma warning(disable : 4996)
 
 
+char* trimString(char* str)
+{
+	char* end;
 
+	while (isspace((unsigned char)*str)) str++;
+
+	if (*str == 0)
+		return str;
+
+	end = str + strlen(str) - 1;
+	while (end > str && isspace((unsigned char)*end)) end--;
+
+	end[1] = '\0';
+
+	return str;
+}
 tDatabaze* NactiDatabazi(char* soubor)  //TODO zjistit od n2koho jak nacita 2rozmerne pole
 {
 	tDatabaze* temp = malloc(sizeof(tDatabaze));
@@ -66,31 +82,49 @@ int DejIndexMesta(tDatabaze* db, char* mesto) { //TODO otestovat
 	tSeznamMest *temp = db->seznam;
 	for (int i = 0; i < db->pocetMest; i++)
 	{
-		if (strcmp(temp->mesto,mesto))
+		/*
+		int len = strlen(mesto);
+		memcpy(tempMesto, &temp->mesto, len);
+		tempMesto[len] = "\0";
+		*/
+		/*
+		printf("databaze: %s\n",trimString(temp->mesto));
+		printf("%d\n",strlen(trimString(temp->mesto)));
+		printf("zadane: %s\n",mesto);
+		printf("%d\n",strlen(mesto));
+		*/
+		if (strcmp(trimString(temp->mesto),mesto) == 0)
 		{
-			printf("NASEL mesto v seznamu - %d.\n",i);
+			//printf("NASEL mesto v seznamu - %d.\n",i);
 			return i;
 		}
 		temp = temp->dalsi;
 	}
-	printf("Nenasel mesto v seznamu.\n");
+	//printf("Nenasel mesto v seznamu.\n");
+	return -1;
 }
 double DejVzdalenostMeziMesty(tDatabaze* db, char* mesto1, char* mesto2) {
-	return db->vzdalenosti[DejIndexMesta(db, mesto1)][DejIndexMesta(db, mesto2)];
+	int index1 = DejIndexMesta(db, mesto1);
+	int index2 = DejIndexMesta(db, mesto2);
+	if (index1 > -1 && index2 > -1)
+	{
+		return db->vzdalenosti[index1][index2];
+	}
+	return 0;
 }
 double SpocitejDelku(tDatabaze* db, tSeznamMest* seznam) { //Zkontrolovat funk4nost
 	if (seznam == NULL)
 	{
-		printf("Srznam byl NULL\n");
+		printf("Seznam byl NULL\n");
 		return 0;
 	}
 	double vzdalenost = 0;
 	tSeznamMest *temp = seznam;
 	while (temp->dalsi != NULL)
 	{
-		printf("VZdalenost cykl\n");
+		//printf("VZdalenost cykl\n");
 		vzdalenost = vzdalenost + DejVzdalenostMeziMesty(db,temp->mesto,temp->dalsi->mesto);
-		printf("vzdalenost cykl - %f\n", vzdalenost);
+		printf("vzdalenost postup - %f\n", vzdalenost);
 		temp = temp->dalsi;
 	}
 	return vzdalenost;
@@ -100,7 +134,7 @@ void VypisVzdalenostiOdPocatku(tDatabaze* db, tSeznamMest* seznam) { //Zkontrolo
 	tSeznamMest* temp = seznam;
 	while (temp->dalsi != NULL)
 	{
-		printf("%d", DejVzdalenostMeziMesty(db, start, temp->dalsi->mesto));
+		printf("%f\n", DejVzdalenostMeziMesty(db, start->mesto, temp->dalsi->mesto));
 		temp = temp->dalsi;
 	}
 }

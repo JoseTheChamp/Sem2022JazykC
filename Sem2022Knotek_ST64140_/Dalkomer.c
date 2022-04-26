@@ -58,17 +58,27 @@ void main() {
 			printf("Zadej jmeno mesta(max %d):\n", DELKA_MESTA);
 			scanf("%s", &nazev);
 			printf("Zadej index na ktery chces mesto vlozit: \n");
-			scanf("%d", index);
-			PridejNaIndex(seznamMest, index, VytvorMesto(nazev));
+			scanf("%d", &index);
+			printf("Po nacteni");
+			if (seznamMest == NULL)
+			{
+				printf("Novy seznam");
+				seznamMest = VytvorMesto(nazev);
+			}
+			else {
+				printf("Pridej");
+				PridejNaIndex(seznamMest, index, VytvorMesto(nazev));
+			}
 			break;
 		case '4':
 			printf("Zadej odebirany index: \n");
-			scanf("%d", index);
-			OdeberPrvek(seznamMest, index);
+			scanf("%d", &index);
+			seznamMest = OdeberPrvek(seznamMest, index);
 			break;
 		case '5':
 			printf("Seznam byl zrusen: \n");
 			ZrusSeznam(seznamMest);
+			seznamMest = NULL;
 			break;
 		case '6':
 			printf("V seznamu jsou tyto mesta: \n");
@@ -76,7 +86,7 @@ void main() {
 			break;
 		case '7':
 			printf("Zobrazeni delky cesty: \n");
-			printf("%f",SpocitejDelku(databaze, seznamMest));
+			printf("%f\n",SpocitejDelku(databaze, seznamMest));
 			break;
 		case '8':
 			printf("Zobrazeni dilcich vzdalenosti: \n");

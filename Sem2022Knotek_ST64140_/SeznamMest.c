@@ -33,29 +33,38 @@ tSeznamMest* PridejNaKonec(tSeznamMest* seznam, tSeznamMest* novy) {
 }
 
 tSeznamMest* PridejNaIndex(tSeznamMest* seznam, int index, tSeznamMest* novy) {
-	tSeznamMest* temp = seznam;
-	for (int i = 0; i < index - 1; i++)
-	{
-		if (temp->dalsi == NULL)
-		{
-			return NULL;
-		}
+	printf("Zacatek pridani");
+	tSeznamMest *temp = seznam;
+	int i = 0;
+	printf("Pred cyklem");
+	while (temp->dalsi != NULL && i < index-1) {
+		printf("%d - skok\n",i);
+		i = i + 1;
 		temp = temp->dalsi;
 	}
+	printf("Po cyklu");
 	if (temp->dalsi != NULL)
 	{
 		if (temp->dalsi->dalsi != NULL)
 		{
-			novy->dalsi = temp->dalsi->dalsi;
+			printf("%d index - ma 2 nasledniky\n");
+			tSeznamMest *naslednik = temp->dalsi->dalsi;
+			ZrusSeznam(temp->dalsi);
 			temp->dalsi = novy;
-		}else{
+			novy->dalsi = naslednik;
+		}
+		else {
+			printf("%d index - ma 1 nasledniky\n");
+			ZrusSeznam(temp->dalsi);
 			temp->dalsi = novy;
 		}
 	}
 	else {
+		printf("%d index - nema nasledniky\n");
 		temp->dalsi = novy;
 	}
-	return seznam;
+
+
 }
 
 void VypisSeznam(tSeznamMest* seznam) {
@@ -64,12 +73,12 @@ void VypisSeznam(tSeznamMest* seznam) {
 	{
 		return;
 	}
-	printf("%s", seznam->mesto);
+	printf("%s\n", seznam->mesto);
 	tSeznamMest* temp = seznam;
 	while (temp->dalsi != NULL)
 	{
 		temp = temp->dalsi;
-		printf("%s", temp->mesto);
+		printf("%s\n", temp->mesto);
 	}
 }
 
@@ -78,14 +87,19 @@ tSeznamMest* OdeberPrvek(tSeznamMest* seznam, int index) {
 	{
 		return NULL;
 	}
+	if (seznam->dalsi == NULL)
+	{
+		free(seznam);
+		seznam = NULL;
+		return NULL;
+	}
 	tSeznamMest* temp = seznam;
 	for (int i = 0; i < index-1; i++)
 	{
 		if (temp->dalsi != NULL)
 		{
 			temp = temp->dalsi;
-		}
-		else {
+		}else {
 			return NULL;
 		}
 	}
